@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './widgets.dart';
-import './news_api.dart';
+import '../widgets/news_widget.dart';
+import '../service/news_api.dart';
 
 class NewsPage extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
@@ -18,7 +18,7 @@ class _NewsPageState extends State<NewsPage> {
   int _page = 1;
 
   Future<void> getNews() async {
-    News news = News();
+    NetworkManager news = NetworkManager();
     await news.getNews(_page);
     setState(() {
       _isLoading = false;
@@ -69,7 +69,7 @@ class _NewsPageState extends State<NewsPage> {
                             shrinkWrap: true,
                             physics: ClampingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return NewsTitle(
+                              return NewsWidget(
                                 imgUrl: _newsList[index].urlToImage ?? "",
                                 title: _newsList[index].title ?? "",
                                 desc: _newsList[index].description ?? "",

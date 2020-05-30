@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import './article_view_page.dart';
-import './colors.dart';
+import '../pages/article_view_page.dart';
+import '../utils/colors.dart';
 
-class NewsTitle extends StatelessWidget {
+class NewsWidget extends StatelessWidget {
   final String imgUrl, title, desc, content, postUrl;
 
-  NewsTitle(
+  NewsWidget(
       {this.imgUrl,
       this.desc,
       this.title,

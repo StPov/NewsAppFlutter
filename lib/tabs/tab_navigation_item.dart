@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../sources_page.dart';
-import '../favorites_page.dart';
-import '../news_page.dart';
+import '../pages/sources_page.dart';
+import '../pages/favorites_page.dart';
+import '../pages/news_page.dart';
 
 class TabNavigationItem {
   final Widget page;
