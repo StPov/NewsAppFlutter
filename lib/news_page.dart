@@ -1,9 +1,50 @@
 import 'package:flutter/material.dart';
+import './widgets.dart';
+import './news_api.dart';
 
-class NewsPage extends StatelessWidget {
+class NewsPage extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
         builder: (context) => NewsPage(),
       );
+
+  @override
+  _NewsPageState createState() => _NewsPageState();
+}
+
+class _NewsPageState extends State<NewsPage> {
+  ScrollController _scrollController = new ScrollController();
+  bool _isLoading = false;
+  var _newsList = new List();
+  int _page = 1;
+
+  Future<void> getNews() async {
+    News news = News();
+    await news.getNews(_page);
+    setState(() {
+      _isLoading = false;
+      _newsList.addAll(news.news);
+      _page++;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = true;
+    getNews();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        getNews();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +52,36 @@ class NewsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("News"),
       ),
-      body: Center(
-        child: Text("News Screen"),
+      body: SafeArea(
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: _newsList.length,
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return NewsTitle(
+                                imgUrl: _newsList[index].urlToImage ?? "",
+                                title: _newsList[index].title ?? "",
+                                desc: _newsList[index].description ?? "",
+                                content: _newsList[index].content ?? "",
+                                postUrl: _newsList[index].articleUrl ?? "",
+                              );
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
