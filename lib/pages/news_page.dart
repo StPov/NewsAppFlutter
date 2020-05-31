@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/news_widget.dart';
 import '../service/news_api.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class NewsPage extends StatefulWidget {
   static Route<dynamic> route() => MaterialPageRoute(
@@ -16,6 +17,19 @@ class _NewsPageState extends State<NewsPage> {
   bool _isLoading = false;
   var _newsList = new List();
   int _page = 1;
+
+  bool onNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      if (_scrollController.position.maxScrollExtent >
+              _scrollController.offset &&
+          _scrollController.position.maxScrollExtent -
+                  _scrollController.offset <=
+              50) {
+        getNews();
+      }
+    }
+    return true;
+  }
 
   Future<void> getNews() async {
     NetworkManager news = NetworkManager();
@@ -63,20 +77,42 @@ class _NewsPageState extends State<NewsPage> {
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(top: 16),
-                        child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: _newsList.length,
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return NewsWidget(
-                                imgUrl: _newsList[index].urlToImage ?? "",
-                                title: _newsList[index].title ?? "",
-                                desc: _newsList[index].description ?? "",
-                                content: _newsList[index].content ?? "",
-                                postUrl: _newsList[index].articleUrl ?? "",
-                              );
-                            }),
+                        child: NotificationListener(
+                          onNotification: onNotification,
+                          child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount: _newsList.length,
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Slidable(
+                                  key: ValueKey(index),
+                                  actionPane: SlidableDrawerActionPane(),
+                                  secondaryActions: <Widget>[
+                                    IconSlideAction(
+                                      caption: "Save",
+                                      color: Colors.green,
+                                      icon: Icons.save,
+                                      closeOnTap: false,
+                                      onTap: () {
+                                        print(
+                                            "Save was pressed at index $index");
+                                      },
+                                    )
+                                  ],
+                                  dismissal: SlidableDismissal(
+                                    child: SlidableDrawerDismissal(),
+                                  ),
+                                  child: NewsWidget(
+                                    imgUrl: _newsList[index].urlToImage ?? "",
+                                    title: _newsList[index].title ?? "",
+                                    desc: _newsList[index].description ?? "",
+                                    content: _newsList[index].content ?? "",
+                                    postUrl: _newsList[index].articleUrl ?? "",
+                                  ),
+                                );
+                              }),
+                        ),
                       ),
                     ],
                   ),

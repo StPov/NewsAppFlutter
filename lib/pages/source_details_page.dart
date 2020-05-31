@@ -20,9 +20,17 @@ class _SourceDetailsState extends State<SourceDetails> {
     await networkManager.getSourceDetails(id);
     setState(() {
       _isLoading = false;
-      _sourceDetailsList.addAll(networkManager.sourceDetails);
+      _sourceDetailsList = networkManager.sourceDetails;
     });
-    print(_sourceDetailsList.length);
+  }
+
+  Future<void> getSourceDetailsHeadlines(String id) async {
+    NetworkManager networkManager = NetworkManager();
+    await networkManager.getSourceDetailsHeadlines(id);
+    setState(() {
+      _isLoading = false;
+      _sourceDetailsList = networkManager.sourceDetailsHeadlines;
+    });
   }
 
   @override
@@ -31,6 +39,13 @@ class _SourceDetailsState extends State<SourceDetails> {
     _isLoading = true;
     getSourceDetails(widget.id);
   }
+
+  int groupValue = 0;
+
+  final Map<int, Widget> logoWidgets = const <int, Widget>{
+    0: Text("Everything"),
+    1: Text("Headlines")
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +64,6 @@ class _SourceDetailsState extends State<SourceDetails> {
         children: <Widget>[
           SafeArea(
             child: Column(
-//              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Spacer(),
                 Row(
@@ -65,6 +79,20 @@ class _SourceDetailsState extends State<SourceDetails> {
                         ),
                       ),
                     ),
+                    CupertinoSegmentedControl(
+                      children: logoWidgets,
+                      groupValue: groupValue,
+                      onValueChanged: (changeFromGroupValue) {
+                        setState(() {
+                          groupValue = changeFromGroupValue;
+                          if (groupValue == 0) {
+                            getSourceDetails(widget.id);
+                          } else if (groupValue == 1) {
+                            getSourceDetailsHeadlines(widget.id);
+                          }
+                        });
+                      },
+                    )
                   ],
                 ),
                 Spacer(),

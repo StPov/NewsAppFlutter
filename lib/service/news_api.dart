@@ -6,6 +6,7 @@ import 'dart:convert';
 class NetworkManager {
   List<Article> news = [];
   List<Article> sourceDetails = [];
+  List<Article> sourceDetailsHeadlines = [];
   List<Source> sources = [];
 
   Future<void> getNews(int page) async {
@@ -80,6 +81,32 @@ class NetworkManager {
             articleUrl: element["url"],
           );
           sourceDetails.add(article);
+        }
+      });
+    }
+  }
+
+  Future<void> getSourceDetailsHeadlines(String id) async {
+    const String apiKey = "8c66ce1dfb9245cf9fe9be0a484d713e";
+    String url =
+        "http://newsapi.org/v2/top-headlines?sources=${id}&apiKey=${apiKey}";
+
+    var response = await http.get(url);
+    var jsonData = jsonDecode(response.body);
+
+    if (jsonData['status'] == "ok") {
+      jsonData["articles"].forEach((element) {
+        if (element['urlToImage'] != null) {
+          Article article = Article(
+            title: element['title'],
+            author: element['author'],
+            description: element['description'],
+            urlToImage: element['urlToImage'],
+            publishedAt: DateTime.parse(element['publishedAt']),
+            content: element["content"],
+            articleUrl: element["url"],
+          );
+          sourceDetailsHeadlines.add(article);
         }
       });
     }
