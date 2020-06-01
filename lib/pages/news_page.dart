@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../widgets/news_widget.dart';
 import '../service/news_api.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -93,10 +94,10 @@ class _NewsPageState extends State<NewsPage> {
                                       caption: "Save",
                                       color: Colors.green,
                                       icon: Icons.save,
-                                      closeOnTap: false,
+                                      closeOnTap: true,
                                       onTap: () {
-                                        print(
-                                            "Save was pressed at index $index");
+                                        Hive.box("articles")
+                                            .add(_newsList[index]);
                                       },
                                     )
                                   ],
@@ -108,7 +109,7 @@ class _NewsPageState extends State<NewsPage> {
                                     title: _newsList[index].title ?? "",
                                     desc: _newsList[index].description ?? "",
                                     content: _newsList[index].content ?? "",
-                                    postUrl: _newsList[index].articleUrl ?? "",
+                                    postUrl: _newsList[index].url ?? "",
                                   ),
                                 );
                               }),

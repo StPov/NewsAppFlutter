@@ -25,9 +25,9 @@ class NetworkManager {
             author: element['author'],
             description: element['description'],
             urlToImage: element['urlToImage'],
-            publishedAt: DateTime.parse(element['publishedAt']),
+            publishedAt: element["publishedAt"],
             content: element["content"],
-            articleUrl: element["url"],
+            url: element["url"],
           );
           news.add(article);
         }
@@ -76,9 +76,9 @@ class NetworkManager {
             author: element['author'],
             description: element['description'],
             urlToImage: element['urlToImage'],
-            publishedAt: DateTime.parse(element['publishedAt']),
+            publishedAt: element["publishedAt"],
             content: element["content"],
-            articleUrl: element["url"],
+            url: element["url"],
           );
           sourceDetails.add(article);
         }
@@ -102,9 +102,9 @@ class NetworkManager {
             author: element['author'],
             description: element['description'],
             urlToImage: element['urlToImage'],
-            publishedAt: DateTime.parse(element['publishedAt']),
+            publishedAt: element["publishedAt"],
             content: element["content"],
-            articleUrl: element["url"],
+            url: element["url"],
           );
           sourceDetailsHeadlines.add(article);
         }
